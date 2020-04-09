@@ -371,15 +371,21 @@ def upgrade():
             f"https://copr.fedorainfracloud.org/coprs/{owner}/{project_name}/"
             f"build/{build_id}/"
         )
-        project_name_list = project_name.split("-")
-        if project_name_list[-1] == "stg":
-            pr_id = int(project_name_list[-2])
-        else:
-            pr_id = int(project_name_list[-1])
 
-        job_trigger = JobTriggerUpgradeModel.get_or_create(
-            type=JobTriggerModelType.pull_request, trigger_id=pr_id, session=session,
-        )
+        try:
+            project_name_list = project_name.split("-")
+            if project_name_list[-1] == "stg":
+                pr_id = int(project_name_list[-2])
+            else:
+                pr_id = int(project_name_list[-1])
+
+            job_trigger = JobTriggerUpgradeModel.get_or_create(
+                type=JobTriggerModelType.pull_request,
+                trigger_id=pr_id,
+                session=session,
+            )
+        except Exception:
+            continue
 
         try:
             copr = Client.create_from_config_file()
