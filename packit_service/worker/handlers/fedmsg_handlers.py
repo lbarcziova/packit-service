@@ -135,7 +135,12 @@ class NewDistGitCommitHandler(FedmsgHandler):
             git_project=up, working_dir=self.service_config.command_handler_work_dir
         )
 
-        self.api = PackitAPI(self.service_config, self.job_config, self.local_project)
+        self.api = PackitAPI(
+            self.service_config,
+            self.job_config,
+            self.local_project,
+            stage=self.service_config.use_stage(),
+        )
         self.api.sync_from_downstream(
             # rev is a commit
             # we use branch on purpose so we get the latest thing

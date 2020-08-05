@@ -167,7 +167,12 @@ class ProposeDownstreamHandler(JobHandler):
             working_dir=self.service_config.command_handler_work_dir,
         )
 
-        self.api = PackitAPI(self.service_config, self.job_config, self.local_project)
+        self.api = PackitAPI(
+            self.service_config,
+            self.job_config,
+            self.local_project,
+            stage=self.service_config.use_stage(),
+        )
 
         errors = {}
         for branch in get_branches(
@@ -621,6 +626,7 @@ class GitHubIssueCommentProposeUpdateHandler(CommentActionHandler):
             # and we want to use job_config since people can override things in there
             package_config=self.job_config,
             upstream_local_project=local_project,
+            stage=self.service_config.use_stage(),
         )
 
         user_can_merge_pr = self.project.can_merge_pr(self.data.user_login)
